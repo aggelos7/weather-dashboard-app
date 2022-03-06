@@ -28,4 +28,14 @@ export class DashboardService {
       }
     ));
   }
+
+  public requestCityById(id: number): Observable<ApiResponse> {
+    return this.http.get(
+      this.baseUri + `/weather?id=${id}&units=metric&appid=${this.api_key}`
+    ).pipe(map(
+      (res: any) => {
+        return res;
+      }
+    ));
+  }
 }

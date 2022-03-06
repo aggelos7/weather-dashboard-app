@@ -27,8 +27,10 @@ export class DashboardComponent implements OnInit {
     // this.localStorageService.localStorageEmitter.subscribe(data => {
     //   console.log(data);
     // });
-    const favoritesLocal = this.localStorageService.get('favorites');
-    this.favorites = favoritesLocal ? JSON.parse(favoritesLocal) : [];
+    let favoritesLocal = this.localStorageService.get('favorites') ? JSON.parse(this.localStorageService.get('favorites')) : [];
+    favoritesLocal.forEach((favorite : CityWeatherCard) => {
+      this.cityWeatherById(favorite.id);
+    }); 
     // console.log(this.favorites);
   }
 
@@ -49,6 +51,25 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  cityWeatherById(id: number) {
+    // this.favorites = favoritesLocal ? favoritesLocal : [];
+    this.dashboardService.requestCityById(id).subscribe(
+      (result: ApiResponse) => {
+        const updatedResult = new CityWeatherCard(
+          result.id,
+          result.name,
+          this.getCityIcon(result.weather[0].icon),
+          result.main.temp,
+          result.main.feels_like,
+          result.main.humidity,
+          true
+        );
+
+        this.favorites.push(updatedResult);
+      }      
+    );
+  }
+
   getCityIcon(icon: string) {
     return `http://openweathermap.org/img/wn/${icon}.png`;
   }
@@ -62,7 +83,7 @@ export class DashboardComponent implements OnInit {
   removeFromFavorites(id: number) {
     this.favorites.splice(this.favorites.findIndex(favorite => favorite.id === id), 1);
     this.localStorageService.set('favorites', this.favorites);
-    if (this.searchResult.id === id) this.searchResult.is_favorite = false;
+    if (this.searchResult && this.searchResult.id === id) this.searchResult.is_favorite = false;
   }
 
 }
