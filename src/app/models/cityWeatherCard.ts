@@ -1,4 +1,5 @@
 export class CityWeatherCard {
+    id: number;
     name: string;
     icon: string;
     temp: number;
@@ -6,7 +7,8 @@ export class CityWeatherCard {
     humidity: number;
     is_favorite: boolean;
 
-    constructor(name: string, icon: string, temp: number, feels_like: number, humidity: number, is_favorite = false) {
+    constructor(id: number, name: string, icon: string, temp: number, feels_like: number, humidity: number, is_favorite = false) {
+        this.id = id;
         this.name = name;
         this.icon = icon;
         this.temp = temp;

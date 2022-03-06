@@ -1,12 +1,20 @@
 <mat-grid-list cols="3" rowHeight="100px">
-    <mat-grid-tile colspan="3">Title</mat-grid-tile>
-    <mat-grid-tile rowspan="6">
+    <mat-grid-tile colspan="3" style="border-left: none; border-top: none; background: #1919705e;">
+        <label class="title">The Weather Dashboard</label>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="4" style="border-left: none;">
         <div class="search">
             <div class="custom_row">
                 <h1>Search for a City:</h1>
             </div>
             <div class="custom_row">
-                <input type="text" name="searchText" [(ngModel)]="searchText" class="searchInput" placeholder="City">
+                <input type="text" placeholder="City" matInput [formControl]="searchInput" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let city of cities" [value]="city.name">
+                        {{city.name}}
+                    </mat-option>
+                </mat-autocomplete>
+
                 <button type="button" class="searchBtn" (click)="searchCity()">
                     <mat-icon>search</mat-icon>
                 </button>
@@ -18,16 +26,21 @@
             </div> -->
         </div>
     </mat-grid-tile>
+
     <mat-grid-tile rowspan="3" colspan="2">
         <div class="content">
             <mat-card class="mat-elevation-z4" *ngIf="(searchResult | keyvalue)?.length">
                 <mat-card-header>
-                    <mat-card-title>
+                    <mat-card-title style="width: 80%">
                         {{searchResult.name}}
                     </mat-card-title>
-                    <mat-icon (click)="removeFromFavorites()" *ngIf="searchResult.is_favorite">favorite</mat-icon>
-                    <mat-icon (click)="addToFavorites()" *ngIf="!searchResult.is_favorite">favorite_border
-                    </mat-icon>
+                    <mat-card-title style="width: 20%">
+                        <mat-icon (click)="removeFromFavorites(searchResult.id)" *ngIf="searchResult.is_favorite">
+                            favorite
+                        </mat-icon>
+                        <mat-icon (click)="addToFavorites()" *ngIf="!searchResult.is_favorite">favorite_border
+                        </mat-icon>
+                    </mat-card-title>
                 </mat-card-header>
                 <img mat-card-image [src]="searchResult.icon">
                 <mat-card-content>
@@ -39,27 +52,30 @@
         </div>
     </mat-grid-tile>
 
-
-    <mat-grid-tile rowspan="3" colspan="2">
-            <div class="container" *ngIf="favorites">
-                <div class="favorite" *ngFor="let favorite of favorites">
-                    <mat-card class="mat-elevation-z4">
-                        <mat-card-header>
-                            <mat-card-title>
-                                {{favorite.name}}
-                            </mat-card-title>
-                            <mat-icon (click)="removeFromFavorites()" *ngIf="favorite.is_favorite">favorite</mat-icon>
+    <mat-grid-tile class="favorites" rowspan="5" colspan="2">
+        <div style="text-align: center; margin-top: 30px;"><h1>Favorite Cities</h1></div>
+        <div class="fav-container" *ngIf="favorites">
+            <div class="favorite" *ngFor="let favorite of favorites">
+                <mat-card class="mat-elevation-z4">
+                    <mat-card-header>
+                        <mat-card-title style="width: 80%">
+                            {{favorite.name}}
+                        </mat-card-title>
+                        <mat-card-title style="width: 20%">
+                            <mat-icon (click)="removeFromFavorites(favorite.id)" *ngIf="favorite.is_favorite">favorite
+                            </mat-icon>
                             <mat-icon (click)="addToFavorites()" *ngIf="!favorite.is_favorite">favorite_border
                             </mat-icon>
-                        </mat-card-header>
-                        <img mat-card-image [src]="favorite.icon">
-                        <mat-card-content>
-                            <p>Temp: {{favorite.temp}} &#8451;</p>
-                            <p>Feels: {{favorite.feels_like}} &#8451;</p>
-                            <p>Humidity: {{favorite.humidity}}%</p>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
+                        </mat-card-title>
+                    </mat-card-header>
+                    <img mat-card-image [src]="favorite.icon">
+                    <mat-card-content>
+                        <p>Temp: {{favorite.temp}} &#8451;</p>
+                        <p>Feels: {{favorite.feels_like}} &#8451;</p>
+                        <p>Humidity: {{favorite.humidity}}%</p>
+                    </mat-card-content>
+                </mat-card>
             </div>
+        </div>
     </mat-grid-tile>
 </mat-grid-list>
